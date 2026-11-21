@@ -18,7 +18,6 @@ Unofficial Homebridge dynamic-platform plugin for Sleepy's Elite / BOX25 adjusta
 - Motor requests expire after 15 seconds if they have not been transmitted, including queued requests
 - Native Node.js Bluetooth over BlueZ/D-Bus
 - No Python, virtual environment, or Bleak setup
-
 - Massage / vibration: on/off, intensity 0–7, modes 1–3, timers 10/20/30 min
 
 ## Requirements

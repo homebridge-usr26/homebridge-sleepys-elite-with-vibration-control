@@ -61,10 +61,6 @@ export class SleepysElitePlatformAccessory {
     this.massageOn = false;
     this.createMassageService();
     this.createMassageModeSwitches();
-    
-    this.bed = null;
-    this.initializeBluetooth();
-  }
 
     createMassageService() {
     const zone = 'massage';
@@ -142,6 +138,10 @@ export class SleepysElitePlatformAccessory {
           setTimeout(() => service.getCharacteristic(this.Characteristic.On).updateValue(false), 300);
         });
     }
+  }
+    
+    this.bed = null;
+    this.initializeBluetooth();
   }
   
   async initializeBluetooth() {

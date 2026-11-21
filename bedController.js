@@ -865,54 +865,54 @@ export class SleepysBedController {
   }
 
   buildStarCommand(category, command) {
-  return Buffer.from([0x5A, 0x01, 0x03, 0x10, category, command, 0xA5]);
-}
-
-buildMassageIntensityCommand(level0to7) {
-  const level = Math.max(0, Math.min(7, Math.round(Number(level0to7))));
-  const encoded = level === 0 ? 0 : level + 1; // 1..7 → 2..8
-  return Buffer.from([0x5A, 0xE0, 0x04, 0x06, encoded, encoded, 0x00, 0xA5]);
-}
-
-buildMassageTimerCommand(minutes) {
-  const map = { 10: 1, 20: 2, 30: 3 };
-  const code = map[minutes] ?? 1;
-  return Buffer.from([0x5A, 0xE0, 0x04, 0x07, code, 0x00, 0x00, 0xA5]);
-}
-
-async setMassagePower(on) {
-  // Prefer explicit off; use mode-1 to start if turning on without intensity.
-  const frame = on
-    ? this.buildStarCommand(0x30, 0x52) // mode 1
-    : this.buildStarCommand(0x30, 0x6F); // off
-  await this.writeFrame(frame);
-  this.log.info(`Sent massage ${on ? 'on (mode 1)' : 'off'}`);
-  return { sent: true };
-}
-
-async setMassageMode(mode) {
-  const cmd = ({ 1: 0x52, 2: 0x53, 3: 0x54 })[mode];
-  if (cmd == null) throw new Error(`Unknown massage mode: ${mode}`);
-  await this.writeFrame(this.buildStarCommand(0x30, cmd));
-  this.log.info(`Sent massage mode ${mode}`);
-  return { sent: true };
-}
-
-async setMassageIntensity(level0to7) {
-  const level = Math.max(0, Math.min(7, Math.round(Number(level0to7))));
-  if (level === 0) {
-    return this.setMassagePower(false);
+    return Buffer.from([0x5A, 0x01, 0x03, 0x10, category, command, 0xA5]);
   }
-  await this.writeFrame(this.buildMassageIntensityCommand(level));
-  this.log.info(`Sent massage intensity ${level}/7`);
-  return { sent: true };
-}
 
-async setMassageTimer(minutes) {
-  await this.writeFrame(this.buildMassageTimerCommand(minutes));
-  this.log.info(`Sent massage timer ${minutes} min`);
-  return { sent: true };
-}
+  buildMassageIntensityCommand(level0to7) {
+    const level = Math.max(0, Math.min(7, Math.round(Number(level0to7))));
+    const encoded = level === 0 ? 0 : level + 1; // 1..7 → 2..8
+    return Buffer.from([0x5A, 0xE0, 0x04, 0x06, encoded, encoded, 0x00, 0xA5]);
+  }
+
+  buildMassageTimerCommand(minutes) {
+    const map = { 10: 1, 20: 2, 30: 3 };
+    const code = map[minutes] ?? 1;
+    return Buffer.from([0x5A, 0xE0, 0x04, 0x07, code, 0x00, 0x00, 0xA5]);
+  }
+
+  async setMassagePower(on) {
+    // Prefer explicit off; use mode-1 to start if turning on without intensity.
+    const frame = on
+      ? this.buildStarCommand(0x30, 0x52) // mode 1
+      : this.buildStarCommand(0x30, 0x6F); // off
+    await this.writeFrame(frame);
+    this.log.info(`Sent massage ${on ? 'on (mode 1)' : 'off'}`);
+    return { sent: true };
+  }
+
+  async setMassageMode(mode) {
+    const cmd = ({ 1: 0x52, 2: 0x53, 3: 0x54 })[mode];
+    if (cmd == null) throw new Error(`Unknown massage mode: ${mode}`);
+    await this.writeFrame(this.buildStarCommand(0x30, cmd));
+    this.log.info(`Sent massage mode ${mode}`);
+    return { sent: true };
+  }
+
+  async setMassageIntensity(level0to7) {
+    const level = Math.max(0, Math.min(7, Math.round(Number(level0to7))));
+    if (level === 0) {
+      return this.setMassagePower(false);
+    }
+    await this.writeFrame(this.buildMassageIntensityCommand(level));
+    this.log.info(`Sent massage intensity ${level}/7`);
+    return { sent: true };
+  }
+
+  async setMassageTimer(minutes) {
+    await this.writeFrame(this.buildMassageTimerCommand(minutes));
+    this.log.info(`Sent massage timer ${minutes} min`);
+    return { sent: true };
+  }
 
   async setLightPower(on) {
     const frame = Buffer.from(
