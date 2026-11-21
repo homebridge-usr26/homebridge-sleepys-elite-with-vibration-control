@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0 — 2026-11-21
+
+- Add vibration support
+
 ## 1.2.8 — 2026-10-14
 
 - Combine related HomeKit power, color, and brightness updates over a 700 ms window so an explicit brightness replaces the remembered startup brightness.

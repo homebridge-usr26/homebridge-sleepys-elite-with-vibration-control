@@ -1,7 +1,5 @@
 # homebridge-sleepys-elite
 
-[![verified-by-homebridge](https://img.shields.io/badge/_-verified-blueviolet?color=%23491F59&style=flat&logoColor=%23FFFFFF&logo=homebridge)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
-
 Unofficial Homebridge dynamic-platform plugin for Sleepy's Elite / BOX25 adjustable beds.
 
 ## Features

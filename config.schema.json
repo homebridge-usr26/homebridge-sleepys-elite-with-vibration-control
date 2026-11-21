@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "SleepysEliteMassage",
+  "pluginAlias": "SleepysEliteWithVibration",
   "pluginType": "platform",
   "singular": true,
   "schema": {
@@ -8,7 +8,7 @@
       "name": {
         "title": "Name",
         "type": "string",
-        "default": "Sleepy's Elite"
+        "default": "Sleepy's Elite with Vibration Control"
       },
       "deviceNamePrefix": {
         "title": "Bed Bluetooth Name Prefix",

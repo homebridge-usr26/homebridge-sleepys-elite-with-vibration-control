@@ -61,8 +61,12 @@ export class SleepysElitePlatformAccessory {
     this.massageOn = false;
     this.createMassageService();
     this.createMassageModeSwitches();
+    
+    this.bed = null;
+    this.initializeBluetooth();
+  }
 
-    createMassageService() {
+  createMassageService() {
     const zone = 'massage';
     let service = this.accessory.getServiceById(this.Service.Lightbulb, zone);
     if (!service) {
@@ -139,11 +143,7 @@ export class SleepysElitePlatformAccessory {
         });
     }
   }
-    
-    this.bed = null;
-    this.initializeBluetooth();
-  }
-  
+
   async initializeBluetooth() {
     // Verification/test environments may not expose the host BlueZ system bus.
     // The plugin must still load cleanly when Bluetooth is unavailable.

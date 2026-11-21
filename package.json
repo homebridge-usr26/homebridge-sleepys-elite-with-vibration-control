@@ -1,6 +1,6 @@
 {
   "name": "homebridge-sleepys-elite-with-vibration-control",
-  "displayName": "Sleepy's Elite",
+  "displayName": "Sleepy's Elite with Vibration Control",
   "type": "module",
   "version": "1.3.0",
   "description": "Homebridge dynamic platform plugin for Sleepy's Elite / BOX25 adjustable beds with vibration control",
