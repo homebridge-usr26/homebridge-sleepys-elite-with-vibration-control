@@ -57,10 +57,93 @@ export class SleepysElitePlatformAccessory {
     this.createZone('Lumbar', 'lumbar');
     this.createZone('Light', 'led');
 
+    this.values.massage = 0;
+    this.massageOn = false;
+    this.createMassageService();
+    this.createMassageModeSwitches();
+    
     this.bed = null;
     this.initializeBluetooth();
   }
 
+    createMassageService() {
+    const zone = 'massage';
+    let service = this.accessory.getServiceById(this.Service.Lightbulb, zone);
+    if (!service) {
+      service = this.accessory.addService(this.Service.Lightbulb, 'Massage', zone);
+    }
+    service.setCharacteristic(this.Characteristic.Name, 'Massage');
+    this.services[zone] = service;
+
+    service.getCharacteristic(this.Characteristic.On)
+      .onGet(() => this.massageOn)
+      .onSet(async (value) => {
+        const on = Boolean(value);
+        this.massageOn = on;
+        if (!this.bed) return;
+        if (on) {
+          const level = Math.max(1, Math.round((this.values.massage || 50) * 7 / 100));
+          await this.bed.setMassageIntensity(level);
+          this.values.massage = Math.round(level * 100 / 7);
+          service.getCharacteristic(this.Characteristic.Brightness).updateValue(this.values.massage);
+        } else {
+          await this.bed.setMassagePower(false);
+          this.values.massage = 0;
+          service.getCharacteristic(this.Characteristic.Brightness).updateValue(0);
+        }
+      });
+
+    service.getCharacteristic(this.Characteristic.Brightness)
+      .onGet(() => this.values.massage)
+      .onSet(async (value) => {
+        const pct = Math.max(0, Math.min(100, Math.round(Number(value))));
+        const level = Math.round(pct * 7 / 100); // 0..7
+        this.values.massage = level === 0 ? 0 : Math.round(level * 100 / 7);
+        this.massageOn = level > 0;
+        if (!this.bed) return;
+        await this.bed.setMassageIntensity(level);
+        service.getCharacteristic(this.Characteristic.On).updateValue(this.massageOn);
+        service.getCharacteristic(this.Characteristic.Brightness).updateValue(this.values.massage);
+      });
+  }
+
+  createMassageModeSwitches() {
+    for (const mode of [1, 2, 3]) {
+      const id = `massageMode${mode}`;
+      let service = this.accessory.getServiceById(this.Service.Switch, id);
+      if (!service) {
+        service = this.accessory.addService(this.Service.Switch, `Massage Mode ${mode}`, id);
+      }
+      service.setCharacteristic(this.Characteristic.Name, `Massage Mode ${mode}`);
+      service.getCharacteristic(this.Characteristic.On)
+        .onGet(() => false) // momentary
+        .onSet(async (value) => {
+          if (!value || !this.bed) return;
+          await this.bed.setMassageMode(mode);
+          this.massageOn = true;
+          this.services.massage?.getCharacteristic(this.Characteristic.On).updateValue(true);
+          // snap switch back off
+          setTimeout(() => service.getCharacteristic(this.Characteristic.On).updateValue(false), 300);
+        });
+    }
+
+    for (const minutes of [10, 20, 30]) {
+      const id = `massageTimer${minutes}`;
+      let service = this.accessory.getServiceById(this.Service.Switch, id);
+      if (!service) {
+        service = this.accessory.addService(this.Service.Switch, `Massage ${minutes} min`, id);
+      }
+      service.setCharacteristic(this.Characteristic.Name, `Massage ${minutes} min`);
+      service.getCharacteristic(this.Characteristic.On)
+        .onGet(() => false)
+        .onSet(async (value) => {
+          if (!value || !this.bed) return;
+          await this.bed.setMassageTimer(minutes);
+          setTimeout(() => service.getCharacteristic(this.Characteristic.On).updateValue(false), 300);
+        });
+    }
+  }
+  
   async initializeBluetooth() {
     // Verification/test environments may not expose the host BlueZ system bus.
     // The plugin must still load cleanly when Bluetooth is unavailable.

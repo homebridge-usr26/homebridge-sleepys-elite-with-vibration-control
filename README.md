@@ -19,6 +19,8 @@ Unofficial Homebridge dynamic-platform plugin for Sleepy's Elite / BOX25 adjusta
 - Native Node.js Bluetooth over BlueZ/D-Bus
 - No Python, virtual environment, or Bleak setup
 
+- Massage / vibration: on/off, intensity 0–7, modes 1–3, timers 10/20/30 min
+
 ## Requirements
 
 - Homebridge 2.x
@@ -69,3 +71,4 @@ MIT
 ### Split-bed systems
 
 The plugin supports one adjustable-base controller per Homebridge plugin instance. Split-bed configurations with two independent controllers are not supported.
+

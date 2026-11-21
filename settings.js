@@ -1,2 +1,2 @@
-export const PLATFORM_NAME = 'SleepysElite';
-export const PLUGIN_NAME = 'homebridge-sleepys-elite';
+export const PLATFORM_NAME = 'SleepysEliteMassage';
+export const PLUGIN_NAME = 'homebridge-sleepys-elite-massage';
